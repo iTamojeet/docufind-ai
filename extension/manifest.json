@@ -1,9 +1,21 @@
 {
   "manifest_version": 3,
   "name": "DocuFind AI",
-  "version": "1.0",
-  "description": "Quickly find documents, links, and files from chat histories with AI assistance.",
-  "permissions": ["activeTab", "storage", "scripting"],
+  "version": "2.0",
+  "description": "Find and summarize documents, files, and links from chat histories with AI assistance.",
+  "permissions": [
+    "activeTab", 
+    "storage", 
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://web.telegram.org/*",
+    "https://*.slack.com/*",
+    "https://teams.microsoft.com/*",
+    "https://discord.com/*",
+    "https://app.discord.com/*"
+  ],
   "background": {
     "service_worker": "src/background.js"
   },
@@ -22,8 +34,30 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["src/content_script.js"]
+      "matches": [
+        "https://web.whatsapp.com/*",
+        "https://web.telegram.org/*",
+        "https://*.slack.com/*",
+        "https://teams.microsoft.com/*",
+        "https://discord.com/*",
+        "https://app.discord.com/*"
+      ],
+      "js": ["src/chat-scanner.js"],
+      "css": ["src/sidebar.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/sidebar.html", "src/sidebar.js", "src/sidebar.css"],
+      "matches": [
+        "https://web.whatsapp.com/*",
+        "https://web.telegram.org/*",
+        "https://*.slack.com/*",
+        "https://teams.microsoft.com/*",
+        "https://discord.com/*",
+        "https://app.discord.com/*"
+      ]
     }
   ]
 }
