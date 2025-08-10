@@ -1,0 +1,31 @@
+<!-- src/sidebar.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./sidebar.css">
+</head>
+<body>
+  <div id="df-app">
+    <header>
+      <h3>DocuFind AI</h3>
+      <div class="controls">
+        <input id="search" placeholder="Search files, keywords..." />
+      </div>
+    </header>
+    <div class="filters">
+      <button data-filter="all" class="active">All</button>
+      <button data-filter="document">Documents</button>
+      <button data-filter="image">Images</button>
+      <button data-filter="link">Links</button>
+      <button id="last7">Last 7 Days</button>
+    </div>
+    <div id="results"></div>
+    <footer>
+      <label><input type="checkbox" id="ocrToggle"> Enable OCR (images)</label>
+    </footer>
+  </div>
+  <script src="./sidebar.js"></script>
+</body>
+</html>
