@@ -9,7 +9,7 @@ import re
 
 load_dotenv()
 
-GEMINI_API_URL = os.getenv("GEMINI_API_URL", "").strip()    # e.g. https://generativelanguage.googleapis.com/v1beta2/models/xxx:generate
+GEMINI_API_URL = os.getenv("GEMINI_API_URL", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 BACKEND_PORT = int(os.getenv("BACKEND_PORT", 8080))
 
@@ -19,6 +19,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 class AnalyzeRequest(BaseModel):
     messages: list | None = None
     text: str | None = None
+    href: str | None = None
     max_tokens: int | None = 400
 
 @app.post("/analyze")
@@ -35,80 +36,59 @@ async def analyze(req: AnalyzeRequest):
     prompt = (
         "You are an assistant that extracts the important information and provides a short, "
         "clear summary (3-6 bullets) and a 1-line title. Format output as JSON with keys: "
-        "\"title\" and \"bullets\" (array of strings).\\n\\n"
-        f"Text to summarize:\\n{text}"
+        "\"title\" and \"bullets\" (array of strings).\n\n"
+        f"Text to summarize:\n{text}"
     )
 
     # Try Gemini if configured
     if GEMINI_API_URL and GEMINI_API_KEY:
         try:
             headers = {
-            "Content-Type": "application/json",
-        }
+                "Content-Type": "application/json",
+            }
 
-        payload = {
-            "contents": [
-                {"role": "user", "parts": [{"text": prompt}]}
-            ]
-        }
+            payload = {
+                "contents": [
+                    {"role": "user", "parts": [{"text": prompt}]}
+                ]
+            }
 
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-               f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
-                headers=headers,
-                json=payload
-            )
-            resp.raise_for_status()
-            jr = resp.json()
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(
+                    f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
+                    headers=headers,
+                    json=payload
+                )
+                resp.raise_for_status()
+                jr = resp.json()
 
-            # Attempt to extract readable text from common fields
-            # Different providers return output in different keys — try several heuristics
-            summary_text = None
-
-            # Heuristic 1: common 'choices' -> 'text' (OpenAI-like)
-            if isinstance(jr.get("choices"), list) and jr["choices"]:
-                c0 = jr["choices"][0]
-                if isinstance(c0, dict):
-                    summary_text = c0.get("text") or c0.get("message") or c0.get("message", {}).get("content")
-
-            # Heuristic 2: Google Gen AI may return 'candidates' or 'output' or 'content'
-            if not summary_text:
-                # candidates -> content
+                # Extract text from Gemini response
+                summary_text = None
+                
+                # Gemini API response structure
                 if isinstance(jr.get("candidates"), list) and jr["candidates"]:
-                    cand = jr["candidates"][0]
-                    if isinstance(cand, dict) and cand.get("content"):
-                        summary_text = cand["content"]
-                # 'output' field (sometimes nested)
-                if not summary_text and isinstance(jr.get("output"), (dict, list)):
-                    out = jr["output"]
-                    if isinstance(out, list) and out and isinstance(out[0], dict):
-                        summary_text = out[0].get("content") or out[0].get("text")
-                    elif isinstance(out, dict):
-                        summary_text = out.get("content") or out.get("text")
+                    candidate = jr["candidates"][0]
+                    if "content" in candidate and "parts" in candidate["content"]:
+                        parts = candidate["content"]["parts"]
+                        if parts and "text" in parts[0]:
+                            summary_text = parts[0]["text"]
 
-            # Heuristic 3: some Gemini variants put text in jr['text'] or jr['summary']
-            if not summary_text:
-                summary_text = jr.get("text") or jr.get("summary") or jr.get("result")
+                if not summary_text:
+                    summary_text = json.dumps(jr)
 
-            # If still empty, fallback to stringifying the response
-            if not summary_text:
-                summary_text = json.dumps(jr)
+                # Try to parse JSON-like output from model
+                parsed = try_parse_json_block(summary_text)
+                if isinstance(parsed, dict) and parsed.get("title") and parsed.get("bullets"):
+                    return {"summary": parsed}
 
-            # Try to parse JSON-like output from model (if model returned JSON)
-            parsed = try_parse_json_block(summary_text)
-            if isinstance(parsed, dict) and parsed.get("title") and parsed.get("bullets"):
-                return {"summary": parsed}
-
-            # Otherwise, convert plain text into a structured summary using naive parser
-            bullets = generate_bullets_from_text(summary_text)
-            title = extract_title_from_text(summary_text) or (bullets[0] if bullets else "Summary")
-            return {"summary": {"title": title, "bullets": bullets}, "raw_response": jr}
+                # Otherwise, convert plain text into a structured summary
+                bullets = generate_bullets_from_text(summary_text)
+                title = extract_title_from_text(summary_text) or (bullets[0] if bullets else "Summary")
+                return {"summary": {"title": title, "bullets": bullets}}
 
         except httpx.HTTPStatusError as exc:
-            # Gemini returned non-2xx
             return {"error": f"Gemini API returned {exc.response.status_code}", "details": exc.response.text}
         except Exception as e:
-            # Log and continue to fallback
             return {"error": "Gemini call failed", "details": str(e)}
 
     # If Gemini not configured, fallback to naive summarizer
@@ -125,14 +105,25 @@ def try_parse_json_block(s: str):
     """
     if not s or not isinstance(s, str):
         return None
+    
+    # Look for JSON within code blocks
+    json_pattern = r'```(?:json)?\s*(\{[\s\S]*?\})\s*```'
+    match = re.search(json_pattern, s, re.IGNORECASE)
+    if match:
+        try:
+            return json.loads(match.group(1))
+        except Exception:
+            pass
+    
     # find first { ... } JSON block
-    m = re.search(r"({[\s\S]*})", s)
+    m = re.search(r"(\{[\s\S]*\})", s)
     if m:
         block = m.group(1)
         try:
             return json.loads(block)
         except Exception:
             pass
+    
     # try the entire string
     try:
         return json.loads(s)
@@ -145,7 +136,7 @@ def generate_bullets_from_text(text: str, max_bullets: int = 5):
     if not text:
         return []
     sents = re.split(r'(?<=[.!?])\s+', text.strip())
-    sents = [s.strip() for s in sents if len(s.strip())>20]
+    sents = [s.strip() for s in sents if len(s.strip()) > 20]
     sents = sorted(sents, key=lambda x: -len(x))
     bullets = [truncate_line(x, 240) for x in sents[:max_bullets]]
     return bullets
@@ -169,3 +160,7 @@ def naive_summarize(text: str, max_sentences: int = 4):
     sents = re.split(r'(?<=[.!?])\s+', text.strip())
     return " ".join(sents[:max_sentences])
 
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=BACKEND_PORT)
