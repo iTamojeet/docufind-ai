@@ -64,7 +64,7 @@ chmod +x install.sh
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/docufind-ai.git
+git clone https://github.com/iTamojeet/docufind-ai.git
 cd docufind-ai
 ```
 
