@@ -1,25 +1,65 @@
 # DocuFind AI
 
-DocuFind AI is a powerful browser extension that helps you quickly find, organize, and summarize documents, links, and files from chat histories and web pages using AI assistance.
+DocuFind AI is a powerful Chrome extension that helps you quickly find, organize, and summarize documents, links, and files from **chat histories** on popular platforms like WhatsApp Web, Telegram, Slack, Microsoft Teams, and Discord using AI assistance.
 
 ## 🚀 Features
 
-- **Smart Content Discovery**: Automatically scans web pages for documents, images, and links
-- **AI-Powered Summarization**: Uses Google Gemini AI to generate concise summaries of content
-- **Real-time Sidebar**: Non-intrusive sidebar interface for easy access
-- **OCR Support**: Extract text from images using Tesseract.js
-- **Advanced Filtering**: Filter content by type, date, and keywords
+- **Chat-Focused Scanning**: Specifically designed for chat platforms - scans the active chat window for documents and links
+- **Multi-Platform Support**: Works with WhatsApp Web, Telegram Web, Slack, Microsoft Teams, Discord
+- **AI-Powered Summarization**: Uses Google Gemini AI to generate concise summaries of documents and links
+- **Smart Sidebar Interface**: Non-intrusive sidebar that appears on supported chat platforms
+- **OCR Support**: Extract text from images shared in chats using Tesseract.js
+- **Advanced Filtering**: Filter by document type, date range, and keywords
+- **Chronological Organization**: Shows files in the order they appeared in chat history
 - **Caching System**: Stores summaries locally to avoid redundant API calls
 - **Export Options**: Copy or download summaries as text files
+- **Privacy-Focused**: Only scans when you choose, processes data locally when possible
+
+## 🎯 How It Works
+
+1. **Open a supported chat platform** (WhatsApp Web, Telegram, Slack, Teams, or Discord)
+2. **Select a specific chat conversation** you want to analyze
+3. **Click the DocuFind AI extension icon** or use the automatic sidebar
+4. **Scan the current chat** for documents, images, and links
+5. **Filter and browse** found items chronologically
+6. **Click any item** to preview and get AI-powered summaries
+7. **Copy or download** summaries for your records
+
+### Supported Chat Platforms
+
+- **WhatsApp Web** (`web.whatsapp.com`) - ✅ Full support
+- **Telegram Web** (`web.telegram.org`) - ✅ Full support  
+- **Slack** (`*.slack.com`) - ✅ Full support
+- **Microsoft Teams** (`teams.microsoft.com`) - ✅ Full support
+- **Discord** (`discord.com`, `app.discord.com`) - ✅ Full support
+
+### File Types Detected
+
+- **Documents**: PDF, DOCX, DOC, XLSX, XLS, PPTX, TXT, CSV
+- **Images**: JPG, PNG, GIF, WebP, SVG (with OCR support)
+- **Links**: Any HTTP/HTTPS URLs shared in chat
+- **Media**: MP4, WebM, MP3 (metadata extraction)
 
 ## 📋 Prerequisites
 
 - Python 3.8 or higher
-- Node.js (for development)
-- Google Chrome or Chromium browser
+- Google Chrome or Chromium browser  
 - Google Gemini API key
+- Access to supported chat platforms
 
-## 🛠 Installation
+## 🛠 Quick Setup
+
+### Option 1: Automated Setup (Recommended)
+
+```bash
+# Clone and setup with one command
+git clone https://github.com/yourusername/docufind-ai.git
+cd docufind-ai
+chmod +x install.sh
+./install.sh
+```
+
+### Option 2: Manual Setup
 
 ### 1. Clone the Repository
 
@@ -71,31 +111,44 @@ The backend will be available at `http://localhost:8080`
 
 ### Basic Usage
 
-1. **Automatic Scanning**: The extension automatically injects a sidebar on web pages and scans for documents, links, and images
-2. **Manual Scanning**: Use the popup (click the extension icon) to manually scan the current page
-3. **Filtering**: Use the sidebar filters to narrow down results by type or date
-4. **Summarization**: Click on any item in the sidebar to preview it and request an AI summary
+1. **Navigate to a chat platform**: Open WhatsApp Web, Telegram, Slack, Teams, or Discord
+2. **Select a chat**: Click on the specific conversation you want to analyze
+3. **Activate DocuFind**: The sidebar should appear automatically, or click the extension icon
+4. **Scan the chat**: Click "Scan Current Chat" or it will scan automatically
+5. **Browse results**: Use filters to find specific types of files or time periods
+6. **Get summaries**: Click any item to preview and request AI summarization
+7. **Export**: Copy or download summaries for your records
 
 ### Sidebar Features
 
-- **Search**: Use the search bar to find specific content
-- **Type Filters**: Filter by documents, images, or links
-- **Time Filters**: Show only items from the last 7 days
-- **OCR**: Extract text from images (enable the OCR toggle first)
-- **Export**: Copy or download summaries
+- **Real-time Chat Detection**: Shows which chat platform and conversation is active
+- **Smart Filters**: 
+  - "All" - Show all found items
+  - "Docs" - Documents and files only  
+  - "Images" - Pictures and graphics
+  - "Links" - URLs and web links
+  - "Last 7d" - Items from the past week
+- **Search Bar**: Find items by filename or keywords
+- **Chronological Display**: Items shown in the order they appeared in chat
+- **Click to Expand**: Preview items and request AI summaries
+- **OCR Toggle**: Enable text extraction from images
 
-### API Endpoints
+### AI Summarization
 
-The backend provides the following API endpoints:
+When you click on any document or link:
+- **Documents**: Attempts to extract text content for analysis
+- **Links**: Fetches webpage content (when possible) 
+- **Images**: Uses OCR to extract text, then summarizes
+- **Generated Summary**: Shows title and bullet points
+- **Export Options**: Copy to clipboard or download as text file
 
-- `POST /analyze`: Analyze and summarize text or messages
-  ```json
-  {
-    "text": "Content to analyze",
-    "messages": ["array", "of", "messages"],
-    "href": "optional_source_url"
-  }
-  ```
+### Extension Popup
+
+Click the extension icon to access:
+- **Platform Status**: Shows if current site is supported
+- **Quick Scan**: Manually trigger a chat scan
+- **Toggle Sidebar**: Show/hide the sidebar
+- **Settings**: Access configuration options
 
 ## 🏗 Architecture
 
