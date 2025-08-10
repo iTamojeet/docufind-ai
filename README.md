@@ -53,7 +53,7 @@ DocuFind AI is a powerful Chrome extension that helps you quickly find, organize
 
 ```bash
 # Clone and setup with one command
-git clone https://github.com/yourusername/docufind-ai.git
+git clone https://github.com/iTamojeet/docufind-ai.git
 cd docufind-ai
 chmod +x install.sh
 ./install.sh
