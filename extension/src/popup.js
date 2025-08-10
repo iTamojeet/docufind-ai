@@ -31,15 +31,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendToAI(data) {
     try {
-      const response = await fetch("http://localhost:5000/analyze", {
+      const response = await fetch("http://localhost:8080/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: data })
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       const json = await response.json();
-      resultsDiv.innerHTML += `<hr><b>AI Summary:</b><br>${json.summary}`;
+      
+      let summaryText = "No summary available";
+      if (json.summary) {
+        if (typeof json.summary === 'object' && json.summary.title && json.summary.bullets) {
+          summaryText = `<strong>${json.summary.title}</strong><br><ul>${json.summary.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`;
+        } else {
+          summaryText = String(json.summary);
+        }
+      } else if (json.error) {
+        summaryText = `Error: ${json.error}`;
+      }
+      
+      resultsDiv.innerHTML += `<hr><b>AI Summary:</b><br>${summaryText}`;
     } catch (err) {
-      resultsDiv.innerHTML += "<hr><b>AI Summary:</b> Error calling AI.";
+      console.error('AI Summary Error:', err);
+      resultsDiv.innerHTML += `<hr><b>AI Summary:</b> Error calling AI: ${err.message}`;
     }
   }
 });
