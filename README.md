@@ -191,4 +191,88 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Debug Mode
 
-Enable debug logging by opening Chrome DevTools
+Enable debug logging by opening Chrome DevTools:
+
+1. Right-click on the page and select "Inspect"
+2. Go to the Console tab to see extension logs
+3. Check the Network tab for API request/response details
+4. Use the Application tab to inspect stored data
+
+### Performance Tips
+
+- **Cache Management**: The extension automatically caches summaries. Clear cache if experiencing issues:
+  ```javascript
+  // In Chrome DevTools Console
+  chrome.storage.local.clear()
+  ```
+- **Rate Limiting**: The Gemini API has rate limits. The extension handles errors gracefully
+- **Large Files**: For large documents, consider breaking them into smaller chunks
+
+## 📈 Roadmap
+
+### Upcoming Features
+
+- [ ] **Multi-language Support**: Support for non-English content
+- [ ] **Advanced Filters**: Filter by file size, creation date, content type
+- [ ] **Batch Processing**: Summarize multiple documents at once
+- [ ] **Integration APIs**: Support for additional AI providers
+- [ ] **Export Formats**: Support for PDF, Word document exports
+- [ ] **Team Features**: Share summaries and collections
+- [ ] **Mobile Support**: Progressive web app version
+
+### Known Limitations
+
+- **Cross-origin Restrictions**: Some websites may block content access due to CORS policies
+- **File Size Limits**: Large files (>20MB) may timeout during processing
+- **API Quotas**: Gemini API usage is subject to Google's rate limits
+- **OCR Accuracy**: Text extraction quality depends on image clarity
+- **Real-time Updates**: Sidebar updates may have a slight delay on dynamic pages
+
+## 🔗 Useful Resources
+
+- [Google Gemini API Documentation](https://ai.google.dev/docs)
+- [Chrome Extension Development Guide](https://developer.chrome.com/docs/extensions/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Tesseract.js OCR Library](https://tesseract.projectnaptha.com/)
+
+## 📞 Support
+
+### Getting Help
+
+1. **Check the Issues**: Look through existing GitHub issues for similar problems
+2. **Documentation**: Review this README and inline code comments
+3. **Community**: Join our discussions for community support
+4. **Bug Reports**: Create detailed bug reports with:
+   - Browser version and OS
+   - Extension version
+   - Console error messages
+   - Steps to reproduce
+
+### Contact Information
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/docufind-ai/issues)
+- **Email**: your.email@example.com
+- **Documentation**: [Full documentation](https://github.com/yourusername/docufind-ai/wiki)
+
+## 🙏 Acknowledgments
+
+- **Google Gemini**: For providing the AI summarization capabilities
+- **Tesseract.js**: For client-side OCR functionality
+- **FastAPI**: For the excellent Python web framework
+- **Chrome Extensions Team**: For the comprehensive extension platform
+- **Open Source Community**: For inspiration and code contributions
+
+## 📊 Project Statistics
+
+- **Languages**: Python, JavaScript, HTML, CSS
+- **Framework**: FastAPI (Backend), Vanilla JS (Frontend)
+- **AI Provider**: Google Gemini
+- **OCR Engine**: Tesseract.js
+- **Storage**: Chrome Local Storage
+- **Architecture**: Client-Server with Browser Extension
+
+---
+
+**Made with ❤️ by Tamojeet**
+
+*DocuFind AI - Making document discovery and summarization effortless.*
