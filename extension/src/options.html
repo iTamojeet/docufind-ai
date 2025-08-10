@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DocuFind AI - Settings</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #1a73e8;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #5f6368;
+            font-size: 16px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .section-header h2 {
+            font-size: 18px;
+            color: #202124;
+            margin-bottom: 4px;
+        }
+        
+        .section-header p {
+            color: #5f6368;
+            font-size: 14px;
+        }
+        
+        .section-content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="text"], input[type="url"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:focus, input[type="url"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+        
+        .form-description {
+            color: #5f6368;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #5f6368;
+            border: 1px solid #dadce0;
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f3f4;
+        }
+        
+        .btn-danger {
+            background: #ea4335;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d33b2c;
+        }
+        
+        .status {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #e8f5e8;
+            color: #137333;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .status.error {
+            background: #fce8e6;
+            color: #d93025;
+            border: 1px solid #f8bbd9;
+        }
+        
+        .status.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+        
+        .api-test {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        
+        .api-test h4 {
+            margin-bottom: 8px;
+            color: #202124;
+        }
+        
+        .platform-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .platform-item {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 16px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .platform-name {
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 4px;
+        }
+        
+        .platform-status {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .platform-status.supported {
+            color: #137333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 DocuFind AI Settings</h1>
+            <p>Configure your AI-powered document finder</p>
+        </div>
+        
+        <!-- Backend Configuration -->
+        <div class="section">
+            <div class="section-header">
+                <h2>🔧 Backend Configuration</h2>
+                <p>Configure the backend server for AI summarization</p>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="backend-url">Backend URL</label>
+                    <input type="url" id="backend-url" placeholder="http://localhost:8080" />
+                    <div class="form-description">URL of your DocuFind AI backend server</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gemini-api-key">Gemini API Key (Optional)</label>
+                    <input type="text" id="gemini-api-key" placeholder="AIza..." />
+                    <div class="form-description">Your Google Gemini API key for AI summarization</div>
+                </div>
+                
+                <div class="api-test">
+                    <h4>🧪 Test Connection</h4>
+                    <button id="test-backend" class="btn btn-secondary">Test Backend</button>
+                    <button id="test-gemini" class="btn btn-secondary">Test Gemini API</button>
+                    <div id="test-results"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scanning Options -->
+        <div class="section">
+            <div class="section-header">
+                <h2>🔍 Scanning Options</h2>
+                <p>Customize how DocuFind AI scans for documents</p>
+            </div>
+            <div class="section-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="auto-scan" />
+                    <label for="auto-scan">Automatically scan chats when opening</label>
+                </div>
+                <div class="form-description">Automatically start scanning when you open a supported chat platform</div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ocr-enabled" />
+                    <label for="ocr-enabled">Enable OCR for image text extraction</label>
+                </div>
+                <div class="form-description">Extract text from images using optical character recognition</div>
+                
+                <div class="form-group">
+                    <label for="max-summary-length">Maximum Summary Length</label>
+                    <select id="max-summary-length">
+                        <option value="200">Short (200 tokens)</option>
+                        <option value="400">Medium (400 tokens)</option>
+                        <option value="600">Long (600 tokens)</option>
+                    </select>
+                    <div class="form-description">Control the length of AI-generated summaries</div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="show-timestamps" />
+                    <label for="show-timestamps">Show message timestamps</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="group-by-type" />
+                    <label for="group-by-type">Group results by file type</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Supported Platforms -->
+        <div class="section">
+            <div class="section-header">
+                <h2>🌐 Supported Platforms</h2>
+                <p>Chat platforms where DocuFind AI can scan for documents</p>
+            </div>
+            <div class="section-content">
+                <div class="platform-list">
+                    <div class="platform-item">
+                        <div class="platform-name">WhatsApp Web</div>
+                        <div class="platform-status supported">✅ Fully Supported</div>
+                    </div>
+                    <div class="platform-item">
+                        <div class="platform-name">Telegram Web</div>
+                        <div class="platform-status supported">✅ Fully Supported</div>
+                    </div>
+                    <div class="platform-item">
+                        <div class="platform-name">Slack</div>
+                        <div class="platform-status supported">✅ Fully Supported</div>
+                    </div>
+                    <div class="platform-item">
+                        <div class="platform-name">Microsoft Teams</div>
+                        <div class="platform-status supported">✅ Fully Supported</div>
+                    </div>
+                    <div class="platform-item">
+                        <div class="platform-name">Discord</div>
+                        <div class="platform-status supported">✅ Fully Supported</div>
+                    </div>
+                    <div class="platform-item">
+                        <div class="platform-name">Other Platforms</div>
+                        <div class="platform-status">⚠️ Limited Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="section">
+            <div class="section-header">
+                <h2>📊 Usage Statistics</h2>
+                <p>Your DocuFind AI usage overview</p>
+            </div>
+            <div class="section-content">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-scans">0</div>
+                        <div class="stat-label">Total Scans</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-items">0</div>
+                        <div class="stat-label">Items Found</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-summaries">0</div>
+                        <div class="stat-label">Summaries Generated</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-time-saved">0</div>
+                        <div class="stat-label">Minutes Saved</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button id="clear-stats" class="btn btn-danger">Clear Statistics</button>
+                    <button id="export-data" class="btn btn-secondary">Export Data</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="section">
+            <div class="section-header">
+                <h2>💾 Data Management</h2>
+                <p>Manage your stored data and cache</p>
+            </div>
+            <div class="section-content">
+                <button id="save-settings" class="btn btn-primary">Save Settings</button>
+                <button id="reset-settings" class="btn btn-secondary">Reset to Defaults</button>
+                <button id="clear-cache" class="btn btn-secondary">Clear Cache</button>
+                
+                <div id="status-message"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <strong>DocuFind AI</strong> - AI-powered document finder for chat histories<br>
+                <a href="https://github.com/yourusername/docufind-ai" target="_blank">Documentation</a> | 
+                <a href="https://github.com/yourusername/docufind-ai/issues" target="_blank">Report Issues</a> | 
+                <a href="#" id="privacy-link">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+    
+    <script src="options.js"></script>
+</body>
+</html>
